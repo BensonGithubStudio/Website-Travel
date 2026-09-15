@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我們家的旅行報</title>
+<title>旅行日誌</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -121,6 +121,10 @@
   }
   .lead:hover{ background: #F5EED9; }
   .lead .bar{ border-radius: 3px; }
+  .latest-label{
+    display:flex; align-items:center; width:fit-content; background:var(--brand); color:#fff;
+    padding:3px 9px; margin-bottom:8px; font-size:11px; font-weight:700; letter-spacing:.12em; line-height:1.4;
+  }
   .lead-kicker{ font-size:12.5px; font-weight:700; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:999px; color:#fff; margin-bottom:10px; }
   .lead h2{ font-family: var(--font-display); font-size: clamp(22px,3vw,30px); margin:0 0 10px; font-weight:700; line-height:1.35; }
   .lead .meta{ font-size:13px; color: var(--ink-soft); margin: 0 0 10px; }
@@ -138,7 +142,7 @@
   .card .country-line{ font-size:12.5px; color: var(--ink-soft); margin: 0 0 4px; font-weight:600; }
   .card h3{ font-family: var(--font-display); font-size:17.5px; margin:0 0 8px; font-weight:700; line-height:1.4; }
   .card p.excerpt{ font-size:13.5px; color: var(--ink); opacity:0.82; margin:0; flex:1;
-    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    line-height:1.6; max-height:4.8em; overflow:hidden; }
   .card .meta{ font-size:11.5px; color: var(--ink-soft); margin-top:10px; }
 
   /* ---------- EMPTY / LOADING / ERROR ---------- */
@@ -257,17 +261,18 @@
 
     #content{ margin-top:16px; }
     .lead{ grid-template-columns:4px 1fr; gap:14px; margin-bottom:18px; padding:18px 16px 18px 0; }
+    .latest-label{ padding:3px 8px; margin-bottom:7px; font-size:10.5px; }
     .lead-kicker{ font-size:11px; padding:3px 9px; margin-bottom:8px; }
     .lead h2{ font-size:21px; margin-bottom:7px; }
     .lead .meta{ font-size:11.5px; margin-bottom:7px; }
-    .lead p.excerpt{ font-size:13px; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .lead p.excerpt{ font-size:13px; line-height:1.55; max-height:3.1em; overflow:hidden; }
 
     .grid{ grid-template-columns:1fr; gap:14px; }
     .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; }
     .card-kicker{ font-size:10.5px; padding:3px 8px; margin-bottom:7px; }
     .card .country-line{ font-size:11.5px; margin-bottom:3px; }
     .card h3{ font-size:16px; margin-bottom:6px; }
-    .card p.excerpt{ font-size:12.5px; line-height:1.5; -webkit-line-clamp:2; }
+    .card p.excerpt{ font-size:12.5px; line-height:1.5; max-height:3em; }
     .card .meta{ font-size:10.5px; margin-top:8px; }
 
     .empty, .loading{ padding:42px 14px; }
@@ -297,13 +302,13 @@
 <div class="utility-bar">
   <div class="utility-inner">
     <span id="todayLine"></span>
-    <span id="countLine">共 0 則提醒</span>
+    <span id="countLine">共 0 則日誌</span>
   </div>
 </div>
 
 <div class="masthead">
-  <h1 class="masthead-title">我們家的旅行報</h1>
-  <p class="masthead-sub">把出關細節、風俗禁忌，和忍不住想講的心得，寫成一則一則的小提醒。</p>
+  <h1 class="masthead-title">旅行日誌</h1>
+  <p class="masthead-sub">旅行日誌，紀錄著旅行的回憶、細節、風俗，和忍不住想講的心得</p>
 </div>
 
 <div class="stat-strip" id="statStrip"></div>
@@ -320,20 +325,20 @@
         </div>
         <button class="btn-add" id="btnAdd" aria-label="投稿一則" title="投稿一則">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-          <span class="btn-label">投稿一則</span>
+          <span class="btn-label">我想紀錄</span>
         </button>
       </div>
     </div>
   </div>
 
   <div id="content">
-    <div class="loading">正在排版今天的頭條…</div>
+    <div class="loading">正在載入日誌紀錄…</div>
   </div>
 </div>
 
 <div class="overlay" id="formOverlay">
   <form class="sheet" id="entryForm">
-    <h2 class="form-title" id="formTitle">投稿一則提醒</h2>
+    <h2 class="form-title" id="formTitle">投稿一則日誌</h2>
 
     <div class="field">
       <label>分類</label>
@@ -530,7 +535,7 @@
     renderStatStrip();
     renderCountryRow();
     renderContent();
-    document.getElementById('countLine').textContent = '共 ' + state.entries.length + ' 則提醒';
+    document.getElementById('countLine').textContent = '共 ' + state.entries.length + ' 則日誌';
   }
 
   function renderStatStrip(){
@@ -587,7 +592,7 @@
         '<div class="empty">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>' +
           '<h3>版面還是空的</h3>' +
-          '<p>投稿第一則提醒，之後每趟旅行都能翻出來看。</p>' +
+          '<p>投稿第一則日誌，之後每趟旅行都能翻出來看。</p>' +
         '</div>';
       var emptyBtn = document.createElement('button');
       emptyBtn.className = 'btn-add';
@@ -613,6 +618,7 @@
       html += '<div class="lead" id="leadCard">' +
         '<div class="bar" style="background:' + lc.hex + '"></div>' +
         '<div>' +
+          '<span class="latest-label">最新日誌</span>' +
           '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + esc(lead.country) + '</span>' +
           '<h2>' + esc(lead.title) + '</h2>' +
           '<p class="meta">' + esc(metaLine(lead)) + '</p>' +
@@ -655,7 +661,7 @@
   // ---------- FORM ----------
   function openForm(entry){
     state.editingId = entry ? entry.id : null;
-    document.getElementById('formTitle').textContent = entry ? '編輯這則提醒' : '投稿一則提醒';
+    document.getElementById('formTitle').textContent = entry ? '編輯這則日誌' : '投稿一則日誌';
     document.getElementById('fCountry').value = entry ? entry.country || '' : '';
     document.getElementById('fRegion').value = entry ? entry.region || '' : '';
     document.getElementById('fTitle').value = entry ? entry.title || '' : '';
@@ -703,7 +709,7 @@
       await saveEntryData(data, !!existing);
       closeForm();
       await loadEntries(); // 重新向後端確認最新資料，畫面只顯示真正寫入成功的內容
-      showToast(existing ? '已更新這則提醒' : '已發布新的提醒');
+      showToast(existing ? '已更新這則日誌' : '已發布新的日誌');
     }catch(err){
       showToast('儲存失敗：' + err.message);
     }finally{
@@ -730,7 +736,7 @@
     var footerHtml;
     if(state.deleteConfirmId === e.id){
       footerHtml =
-        '<div class="confirm-row">確定要刪除這則提醒嗎？' +
+        '<div class="confirm-row">確定要刪除這則日誌嗎？' +
           '<button type="button" class="btn-danger" id="btnConfirmDelete">確定刪除</button>' +
           '<button type="button" class="btn-secondary" id="btnCancelDelete">再想想</button>' +
         '</div><div></div>';
@@ -767,7 +773,7 @@
         await deleteEntryData(e.id);
         closeDetail();
         await loadEntries(); // 重新向後端確認，畫面只顯示真正刪除成功後的內容
-        showToast('已刪除這則提醒');
+        showToast('已刪除這則日誌');
       }catch(err){
         showToast('刪除失敗：' + err.message);
         confirmDelBtn.disabled = false;
