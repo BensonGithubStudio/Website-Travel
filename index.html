@@ -217,6 +217,76 @@
   }
   .toast.show{ transform: translateY(0); opacity:1; }
 
+  /* ---------- BALANCED MOBILE LAYOUT ---------- */
+  @media (max-width:719px){
+    /* Keep the newspaper identity and leave room for the hierarchy to breathe. */
+    .utility-inner{ padding:7px 14px; font-size:11.5px; gap:4px 10px; }
+    .masthead{ padding:18px 16px 16px; border-bottom-width:3px; }
+    .masthead-title{ font-size:30px; line-height:1.3; margin-bottom:5px; }
+    .masthead-sub{ font-size:13px; line-height:1.65; max-width:34ch; }
+
+    .stat-strip{
+      flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; gap:14px;
+      padding:10px 14px; font-size:11.5px; white-space:nowrap; scrollbar-width:none;
+    }
+    .stat-strip::-webkit-scrollbar{ display:none; }
+
+    .wrap{ padding:0 14px 88px; }
+    .nav-bar{ padding:12px 0 4px; }
+    .country-row{ gap:8px; padding-bottom:8px; }
+    .country-row::-webkit-scrollbar{ display:none; }
+    .pill{ padding:6px 13px; font-size:12px; border-width:1px; }
+
+    .filter-row{ display:block; margin:7px 0 0; }
+    .cat-chips{ flex-wrap:nowrap; overflow-x:auto; gap:7px; padding:0 0 9px; scrollbar-width:none; }
+    .cat-chips::-webkit-scrollbar{ display:none; }
+    .cat-chip{ flex:0 0 auto; padding:5px 11px; font-size:11.5px; border-width:1px; gap:4px; }
+    .filter-row > div:last-child{ display:block !important; }
+    .search-box{ min-width:0; max-width:none; width:100%; padding:8px 13px; }
+    .search-box input{ font-size:12.5px; }
+
+    /* The composer is always nearby without consuming filter-row height. */
+    .btn-add{
+      position:fixed; right:max(16px, env(safe-area-inset-right)); bottom:max(16px, env(safe-area-inset-bottom));
+      z-index:40; width:56px; height:56px; padding:0; border-radius:50%; justify-content:center;
+      box-shadow:0 8px 20px rgba(168,51,19,.34);
+    }
+    .btn-add svg{ width:25px; height:25px; }
+    .btn-add .btn-label{ display:none; }
+    .btn-add:focus-visible{ outline-color:var(--ink); outline-offset:3px; }
+
+    #content{ margin-top:16px; }
+    .lead{ grid-template-columns:4px 1fr; gap:14px; margin-bottom:18px; padding:18px 16px 18px 0; }
+    .lead-kicker{ font-size:11px; padding:3px 9px; margin-bottom:8px; }
+    .lead h2{ font-size:21px; margin-bottom:7px; }
+    .lead .meta{ font-size:11.5px; margin-bottom:7px; }
+    .lead p.excerpt{ font-size:13px; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+    .grid{ grid-template-columns:1fr; gap:14px; }
+    .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; }
+    .card-kicker{ font-size:10.5px; padding:3px 8px; margin-bottom:7px; }
+    .card .country-line{ font-size:11.5px; margin-bottom:3px; }
+    .card h3{ font-size:16px; margin-bottom:6px; }
+    .card p.excerpt{ font-size:12.5px; line-height:1.5; -webkit-line-clamp:2; }
+    .card .meta{ font-size:10.5px; margin-top:8px; }
+
+    .empty, .loading{ padding:42px 14px; }
+    .error-box{ margin:10px 0; padding:12px; font-size:13px; }
+
+    .sheet{ max-height:90vh; padding:20px 16px calc(16px + env(safe-area-inset-bottom)); }
+    .sheet h2.form-title{ font-size:21px; margin-bottom:14px; }
+    .field{ margin-bottom:11px; }
+    .field textarea{ min-height:72px; }
+    .sheet-actions{ margin-top:16px; }
+    .detail-kicker{ margin-bottom:8px; }
+    .detail-title{ font-size:22px; margin-bottom:6px; }
+    .detail-meta{ margin-bottom:12px; }
+    .detail-body{ font-size:14px; margin-bottom:16px; }
+    .detail-footer{ padding-top:12px; }
+
+    .toast{ right:14px; bottom:84px; max-width:calc(100vw - 28px); }
+  }
+
   @media (prefers-reduced-motion: reduce){
     .card, .lead, .overlay, .sheet, .toast, .btn-add, .pill{ transition:none !important; }
   }
@@ -248,9 +318,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           <input type="text" id="searchInput" placeholder="搜尋國家或關鍵字">
         </div>
-        <button class="btn-add" id="btnAdd">
+        <button class="btn-add" id="btnAdd" aria-label="投稿一則" title="投稿一則">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-          投稿一則
+          <span class="btn-label">投稿一則</span>
         </button>
       </div>
     </div>
