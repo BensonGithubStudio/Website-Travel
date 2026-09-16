@@ -10,6 +10,8 @@ body{
 ::selection{ background: var(--brand); color: #fff; }
 :focus-visible{ outline: 2px solid var(--brand); outline-offset: 2px; }
 button{ font-family: inherit; cursor: pointer; }
+/* 動作送出中的按鈕一律不可再互動 */
+button:disabled{ cursor: default; opacity: .5; pointer-events: none; }
 textarea, input, select{ font-family: inherit; }
 a{ color: inherit; }
 

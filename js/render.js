@@ -1,5 +1,51 @@
 window.App = window.App || {};
 
+App.PIN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l-.9 6 3.4 2.6V14H7v-2.4L10.4 9z"/><path d="M12 14v7"/></svg>';
+
+App.pinBtnHtml = function(e){
+  var on = App.truthy(e.pinned);
+  var label = on ? '取消釘選' : '釘選到最上面';
+  return '<button type="button" class="btn-pin' + (on ? ' is-pinned' : '') + '" data-pin-id="' + App.esc(e.id) + '"' +
+    ' aria-pressed="' + on + '" aria-label="' + label + '" title="' + label + '">' + App.PIN_SVG + '</button>';
+};
+
+App.bindPinBtns = function(root){
+  Array.prototype.forEach.call(root.querySelectorAll('[data-pin-id]'), function(btn){
+    btn.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      App.togglePin(btn.dataset.pinId, btn);
+    });
+  });
+};
+
+App.togglePin = async function(id, btn){
+  if(App.state.busy) return;
+  var entry = App.state.entries.find(function(x){ return String(x.id) === String(id); });
+  if(!entry) return;
+  var next = !App.truthy(entry.pinned);
+  App.state.busy = true;
+  if(btn) btn.disabled = true;
+  var unlock = App.lockButtons(document.body);
+  App.showToast(next ? '釘選中…' : '取消釘選中…');
+  try{
+    await App.setPinnedData(entry.id, next);
+    entry.pinned = next;
+    App.renderContent();
+    if(App.dom.detailOverlay.classList.contains('open') && String(App.state.detailId) === String(entry.id)){
+      App.renderDetail(entry);
+    }
+    App.showToast(next ? '已釘選，會固定在最上面' : '已取消釘選');
+  }catch(err){
+    App.showToast('釘選沒有成功：' + err.message);
+    if(App.dom.detailOverlay.classList.contains('open') && String(App.state.detailId) === String(entry.id)){
+      App.renderDetail(entry); // 還原按鈕文字
+    }
+  }finally{
+    App.state.busy = false;
+    unlock();
+  }
+};
+
 App.uniqueCountries = function(){
   var seen = {};
   var list = [];
@@ -81,11 +127,20 @@ App.renderContent = function(){
     return;
   }
 
+  var pinnedList = filtered.filter(function(e){ return App.truthy(e.pinned); });
+  var others = filtered.filter(function(e){ return !App.truthy(e.pinned); });
+
   var showLead = App.state.country === 'all' && App.state.category === 'all' && !App.state.search;
-  var lead = showLead ? filtered[0] : null;
-  var rest = lead ? filtered.slice(1) : filtered;
+  var lead = (showLead && others.length) ? others[0] : null;
+  var rest = lead ? others.slice(1) : others;
 
   var html = '';
+
+  if(pinnedList.length){
+    html += '<div class="section-head">' + App.PIN_SVG + '釘選的日誌<span class="section-count">' + pinnedList.length + '</span></div>';
+    html += '<div class="grid" id="pinnedGrid"></div>';
+  }
+
   if(lead){
     var lc = App.CATS[lead.category] || App.CATS.customs;
     var leadCode = App.countryCode(lead.country);
@@ -93,11 +148,16 @@ App.renderContent = function(){
       '<div class="bar" style="background:' + lc.hex + '"></div>' +
       '<div>' +
         '<div class="lead-top">' +
-          '<div>' +
-            '<span class="latest-label">最新日誌</span>' +
-            '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + App.esc(lead.country) + '</span>' +
+          '<div class="lead-top-left">' +
+            App.pinBtnHtml(lead) +
+            '<div class="lead-labels">' +
+              '<span class="latest-label">最新日誌</span>' +
+              '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + App.esc(lead.country) + '</span>' +
+            '</div>' +
           '</div>' +
-          (leadCode ? '<img class="card-flag" src="https://flagcdn.com/96x72/' + leadCode + '.png" srcset="https://flagcdn.com/192x144/' + leadCode + '.png 2x" alt="' + App.esc(lead.country) + '" title="' + App.esc(lead.country) + '" loading="lazy">' : '') +
+          '<div class="card-top-right">' +
+            (leadCode ? '<img class="card-flag" src="https://flagcdn.com/96x72/' + leadCode + '.png" srcset="https://flagcdn.com/192x144/' + leadCode + '.png 2x" alt="' + App.esc(lead.country) + '" title="' + App.esc(lead.country) + '" loading="lazy">' : '') +
+          '</div>' +
         '</div>' +
         '<h2>' + App.esc(lead.title) + '</h2>' +
         '<p class="meta">' + App.esc(App.metaLine(lead)) + '</p>' +
@@ -106,31 +166,45 @@ App.renderContent = function(){
     '</div>';
   }
 
-  html += '<div class="grid" id="cardGrid"></div>';
+  if(rest.length){
+    html += '<div class="grid" id="cardGrid"></div>';
+  }
   content.innerHTML = html;
 
   if(lead){
     document.getElementById('leadCard').addEventListener('click', function(){ App.openDetail(lead.id); });
   }
 
-  var grid = document.getElementById('cardGrid');
-  rest.forEach(function(e){
-    grid.appendChild(App.renderCard(e));
-  });
+  if(pinnedList.length){
+    var pinnedGrid = document.getElementById('pinnedGrid');
+    pinnedList.forEach(function(e){ pinnedGrid.appendChild(App.renderCard(e)); });
+  }
+
+  if(rest.length){
+    var grid = document.getElementById('cardGrid');
+    rest.forEach(function(e){ grid.appendChild(App.renderCard(e)); });
+  }
+
+  App.bindPinBtns(content);
 };
 
 App.renderCard = function(e){
   var c = App.CATS[e.category] || App.CATS.customs;
   var code = App.countryCode(e.country);
   var card = document.createElement('div');
-  card.className = 'card';
+  card.className = 'card' + (App.truthy(e.pinned) ? ' is-pinned' : '');
   card.style.borderLeftColor = c.hex;
   card.tabIndex = 0;
   card.setAttribute('role','button');
   card.innerHTML =
     '<div class="card-top">' +
-      '<span class="card-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
-      (code ? '<img class="card-flag" src="https://flagcdn.com/96x72/' + code + '.png" srcset="https://flagcdn.com/192x144/' + code + '.png 2x" alt="' + App.esc(e.country) + '" title="' + App.esc(e.country) + '" loading="lazy">' : '') +
+      '<div class="card-top-left">' +
+        App.pinBtnHtml(e) +
+        '<span class="card-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+      '</div>' +
+      '<div class="card-top-right">' +
+        (code ? '<img class="card-flag" src="https://flagcdn.com/96x72/' + code + '.png" srcset="https://flagcdn.com/192x144/' + code + '.png 2x" alt="' + App.esc(e.country) + '" title="' + App.esc(e.country) + '" loading="lazy">' : '') +
+      '</div>' +
     '</div>' +
     '<p class="country-line">' + App.esc(e.country) + (e.region ? ' ・ ' + App.esc(e.region) : '') + '</p>' +
     '<h3>' + App.esc(e.title) + '</h3>' +

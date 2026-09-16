@@ -2,20 +2,25 @@ window.App = window.App || {};
 
 // ---------- DETAIL ----------
 App.openDetail = function(id){
+  if(App.state.busy) return;
   var e = App.state.entries.find(function(x){ return x.id === id; });
   if(!e) return;
   App.state.deleteConfirmId = null;
+  App.state.detailId = e.id;
   App.renderDetail(e);
   App.dom.detailOverlay.classList.add('open');
 };
 
 App.closeDetail = function(){
+  if(App.state.busy) return; // 動作進行中不允許關閉
   App.dom.detailOverlay.classList.remove('open');
   App.state.deleteConfirmId = null;
+  App.state.detailId = null;
 };
 
 App.renderDetail = function(e){
   var c = App.CATS[e.category] || App.CATS.customs;
+  var isPinned = App.truthy(e.pinned);
   var footerHtml;
   if(App.state.deleteConfirmId === e.id){
     footerHtml =
@@ -26,6 +31,7 @@ App.renderDetail = function(e){
   } else {
     footerHtml =
       '<div class="left-actions">' +
+        '<button type="button" class="btn-secondary' + (isPinned ? ' is-pinned' : '') + '" id="btnTogglePin">' + (isPinned ? '取消釘選' : '釘選') + '</button>' +
         '<button type="button" class="btn-secondary" id="btnEditEntry">編輯</button>' +
         '<button type="button" class="btn-danger" id="btnDeleteEntry">刪除</button>' +
       '</div>' +
@@ -34,6 +40,7 @@ App.renderDetail = function(e){
 
   App.dom.detailSheet.innerHTML =
     '<span class="detail-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+    (isPinned ? '<span class="detail-pinned">' + App.PIN_SVG + '已釘選</span>' : '') +
     '<p class="detail-country">' + App.esc(e.country) + (e.region ? ' ・ ' + App.esc(e.region) : '') + '</p>' +
     '<h2 class="detail-title">' + App.esc(e.title) + '</h2>' +
     '<p class="detail-meta">' + App.esc([App.formatDate(e.date), e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>' +
@@ -42,25 +49,52 @@ App.renderDetail = function(e){
 
   var closeBtn = document.getElementById('btnCloseDetail');
   if(closeBtn) closeBtn.addEventListener('click', App.closeDetail);
+  var pinBtn = document.getElementById('btnTogglePin');
+  if(pinBtn) pinBtn.addEventListener('click', function(){
+    if(App.state.busy) return;
+    pinBtn.textContent = '處理中…';
+    App.togglePin(e.id, pinBtn);
+  });
   var editBtn = document.getElementById('btnEditEntry');
-  if(editBtn) editBtn.addEventListener('click', function(){ App.closeDetail(); App.openForm(e); });
+  if(editBtn) editBtn.addEventListener('click', function(){
+    if(App.state.busy) return;
+    App.lockButtons(App.dom.detailSheet);
+    App.closeDetail();
+    App.openForm(e);
+  });
   var delBtn = document.getElementById('btnDeleteEntry');
-  if(delBtn) delBtn.addEventListener('click', function(){ App.state.deleteConfirmId = e.id; App.renderDetail(e); });
+  if(delBtn) delBtn.addEventListener('click', function(){
+    if(App.state.busy) return;
+    delBtn.disabled = true;
+    App.state.deleteConfirmId = e.id;
+    App.renderDetail(e);
+  });
   var cancelDelBtn = document.getElementById('btnCancelDelete');
-  if(cancelDelBtn) cancelDelBtn.addEventListener('click', function(){ App.state.deleteConfirmId = null; App.renderDetail(e); });
+  if(cancelDelBtn) cancelDelBtn.addEventListener('click', function(){
+    if(App.state.busy) return;
+    cancelDelBtn.disabled = true;
+    App.state.deleteConfirmId = null;
+    App.renderDetail(e);
+  });
   var confirmDelBtn = document.getElementById('btnConfirmDelete');
   if(confirmDelBtn) confirmDelBtn.addEventListener('click', async function(){
+    if(App.state.busy) return;
+    App.state.busy = true;
+    var unlock = App.lockButtons(document.body);
     confirmDelBtn.disabled = true;
     confirmDelBtn.textContent = '刪除中…';
     try{
       await App.deleteEntryData(e.id);
+      App.state.busy = false;
       App.closeDetail();
       await App.loadEntries(); // 重新向後端確認，畫面只顯示真正刪除成功後的內容
       App.showToast('已刪除這則日誌');
     }catch(err){
       App.showToast('刪除失敗：' + err.message);
-      confirmDelBtn.disabled = false;
       confirmDelBtn.textContent = '確定刪除';
+    }finally{
+      App.state.busy = false;
+      unlock();
     }
   });
 };

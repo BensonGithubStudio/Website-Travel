@@ -38,6 +38,8 @@
 
   #content{ margin-top:16px; }
   .lead{ grid-template-columns:4px 1fr; gap:14px; margin-bottom:18px; padding:18px 16px 18px 0; }
+  .lead-top{ gap:10px; }
+  .lead-top-left{ gap:8px; }
   .latest-label{ padding:3px 8px; margin-bottom:7px; font-size:10.5px; }
   .lead-kicker{ font-size:11px; padding:3px 9px; margin-bottom:8px; }
   .lead h2{ font-size:21px; margin-bottom:7px; }
@@ -48,9 +50,14 @@
   .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; }
   .card-kicker{ font-size:10.5px; padding:3px 8px; }
   .card-top{ margin-bottom:7px; }
-  .card-flag{ width:72px; height:54px; }
+  .card-flag{ width:56px; height:42px; }
+  .card-top{ gap:8px; }
+  .btn-pin{ width:26px; height:26px; }
+  .btn-pin svg{ width:14px; height:14px; }
+  .section-head{ font-size:14.5px; margin-bottom:11px; }
+  #pinnedGrid{ margin-bottom:22px; }
   .card .country-line{ font-size:11.5px; margin-bottom:3px; }
-  .card h3{ font-size:16px; margin-bottom:6px; }
+  .card h3{ font-size:21px; margin-bottom:6px; }
   .card p.excerpt{ font-size:12.5px; line-height:1.5; max-height:3em; }
   .card .meta{ font-size:10.5px; margin-top:8px; }
 
@@ -63,6 +70,7 @@
   .field{ margin-bottom:11px; }
   .field textarea{ min-height:72px; }
   .detail-kicker{ margin-bottom:8px; }
+  .detail-pinned{ margin-bottom:8px; }
   .detail-title{ font-size:22px; margin-bottom:6px; }
   .detail-meta{ margin-bottom:12px; }
   .detail-body{ font-size:14px; margin-bottom:16px; }
@@ -72,5 +80,5 @@
 }
 
 @media (prefers-reduced-motion: reduce){
-  .card, .lead, .overlay, .sheet, .toast, .btn-add, .pill{ transition:none !important; }
+  .card, .lead, .overlay, .sheet, .toast, .btn-add, .pill, .btn-pin{ transition:none !important; }
 }

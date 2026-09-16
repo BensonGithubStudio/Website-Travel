@@ -7,7 +7,9 @@ App.state = {
   search: '',
   formCategory: 'customs',
   editingId: null,
-  deleteConfirmId: null
+  detailId: null,
+  deleteConfirmId: null,
+  busy: false
 };
 
 App.dom = {

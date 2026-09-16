@@ -2,7 +2,7 @@ window.App = window.App || {};
 
 // ---------- STORAGE (Google Sheet via Apps Script Web App) ----------
 // 把「已部署的 Apps Script 網頁應用程式」網址貼在這裡（結尾是 /exec）
-App.API_URL = 'https://script.google.com/macros/s/AKfycbwtiqcMvGUINxD5kiREQ8tei_pyYXFJUT1XRbnReDzXTTUlM6qXSFSANvSJAjqnCPnS/exec';
+App.API_URL = 'https://script.google.com/macros/s/AKfycbzazYHRWD_DzyQUWvnMMqVa0SPTu0RZmMYH9jF1DuBqBiasnfg5P2dHMimq5uI82JUD/exec';
 
 App.loadEntries = async function(){
   var content = App.dom.content;
@@ -12,7 +12,11 @@ App.loadEntries = async function(){
     var json = await res.json();
     if(!json || !json.ok) throw new Error((json && json.error) ? json.error : '讀取失敗（後端未回傳錯誤訊息）');
     var entries = json.entries || [];
-    entries.forEach(function(e){ e.createdAt = Number(e.createdAt) || 0; });
+    entries.forEach(function(e){
+      e.createdAt = Number(e.createdAt) || 0;
+      e.pinned = App.truthy(e.pinned);
+      e.date = App.toDateInputValue(e.date);
+    });
     entries.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
     App.state.entries = entries;
     App.renderAll();
@@ -42,5 +46,16 @@ App.deleteEntryData = async function(id){
   });
   var json = await res.json();
   if(!json || !json.ok) throw new Error((json && json.error) ? json.error : '刪除失敗（後端未回傳錯誤訊息）');
+  return json;
+};
+
+App.setPinnedData = async function(id, pinned){
+  var res = await fetch(App.API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'pin', id: id, pinned: !!pinned })
+  });
+  var json = await res.json();
+  if(!json || !json.ok) throw new Error((json && json.error) ? json.error : '釘選失敗（後端未回傳錯誤訊息）');
   return json;
 };

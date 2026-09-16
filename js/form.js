@@ -2,6 +2,7 @@ window.App = window.App || {};
 
 // ---------- FORM ----------
 App.openForm = function(entry){
+  if(App.state.busy) return;
   App.state.editingId = entry ? entry.id : null;
   document.getElementById('formTitle').textContent = entry ? '編輯這則日誌' : '投稿一則日誌';
   document.getElementById('fCountry').value = entry ? entry.country || '' : '';
@@ -16,6 +17,7 @@ App.openForm = function(entry){
 };
 
 App.closeForm = function(){
+  if(App.state.busy) return; // 送出中不允許關閉
   App.dom.formOverlay.classList.remove('open');
   App.dom.entryForm.reset();
   App.state.editingId = null;
@@ -27,12 +29,15 @@ App.dom.formOverlay.addEventListener('click', function(e){ if(e.target === App.d
 
 App.dom.entryForm.addEventListener('submit', async function(e){
   e.preventDefault();
+  if(App.state.busy) return;
   var country = document.getElementById('fCountry').value.trim();
   var title = document.getElementById('fTitle').value.trim();
   if(!country){ document.getElementById('fCountry').focus(); return; }
   if(!title){ document.getElementById('fTitle').focus(); return; }
 
   var submitBtn = App.dom.entryForm.querySelector('.btn-primary');
+  App.state.busy = true;
+  var unlock = App.lockButtons(document.body);
   submitBtn.disabled = true;
   submitBtn.textContent = '發布中…';
 
@@ -51,12 +56,15 @@ App.dom.entryForm.addEventListener('submit', async function(e){
 
   try{
     await App.saveEntryData(data, !!existing);
+    App.state.busy = false;
     App.closeForm();
     await App.loadEntries(); // 重新向後端確認最新資料，畫面只顯示真正寫入成功的內容
     App.showToast(existing ? '已更新這則日誌' : '已發布新的日誌');
   }catch(err){
     App.showToast('儲存失敗：' + err.message);
   }finally{
+    App.state.busy = false;
+    unlock();
     submitBtn.disabled = false;
     submitBtn.textContent = '發布';
   }

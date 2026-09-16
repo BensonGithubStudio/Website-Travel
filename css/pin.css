@@ -1,0 +1,137 @@
+/* ---------- 釘選功能 ---------- */
+
+/* 卡片頂端：左邊釘選鈕＋分類標籤，右邊國旗；三者互不擠壓 */
+.card .card-top,
+.lead .lead-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:0;
+}
+
+.card-top-left,
+.lead-top-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  flex:1 1 auto;
+}
+.lead-top-left{ flex-wrap:wrap; }
+
+.card-top-right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+/* 分類標籤不再被國旗撐開，過長就收成省略號 */
+.card .card-kicker,
+.lead .lead-kicker{
+  flex:0 1 auto;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 國旗固定尺寸，不隨內容縮放 */
+.card .card-flag,
+.lead .card-flag{
+  flex:0 0 auto;
+  width:34px;
+  height:25px;
+  object-fit:cover;
+  border-radius:3px;
+  display:block;
+}
+
+/* 國家／地區那一行維持整行寬度，不被頂端排版影響 */
+.card .country-line{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.btn-pin{
+  width:28px;
+  height:28px;
+  flex:0 0 auto;
+  padding:0;
+  border-radius:50%;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  color:#9a9285;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.btn-pin svg{ width:15px; height:15px; }
+.btn-pin:hover{ color:#2b2b2b; border-color:rgba(0,0,0,.3); }
+.btn-pin:focus-visible{ outline:2px solid #2454A6; outline-offset:2px; }
+.btn-pin.is-pinned{
+  background:#B5720E;
+  border-color:#B5720E;
+  color:#fff;
+}
+.btn-pin.is-pinned svg{ fill:currentColor; }
+.btn-pin:disabled{ opacity:.45; cursor:default; }
+
+.card.is-pinned{
+  box-shadow:0 0 0 1px rgba(181,114,14,.45);
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:4px 0 14px;
+  font-weight:700;
+  font-size:15px;
+  color:#5d5346;
+}
+.section-head svg{ width:17px; height:17px; color:#B5720E; fill:currentColor; flex:none; }
+.section-count{
+  min-width:20px;
+  height:20px;
+  padding:0 6px;
+  border-radius:10px;
+  background:rgba(181,114,14,.14);
+  color:#8a5709;
+  font-size:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+#pinnedGrid{ margin-bottom:26px; }
+
+.detail-pinned{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-left:8px;
+  padding:3px 9px;
+  border-radius:999px;
+  background:rgba(181,114,14,.13);
+  color:#8a5709;
+  font-size:12px;
+  font-weight:600;
+  vertical-align:middle;
+}
+.detail-pinned svg{ width:13px; height:13px; fill:currentColor; }
+
+#btnTogglePin.is-pinned{
+  color:#8a5709;
+  border-color:rgba(181,114,14,.55);
+}
+
+/* 動作進行中的按鈕一律不可再互動 */
+button:disabled{ pointer-events:none; opacity:.55; }
+
+@media (prefers-reduced-motion: reduce){
+  .btn-pin{ transition:none; }
+}
