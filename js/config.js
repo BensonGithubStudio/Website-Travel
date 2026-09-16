@@ -28,7 +28,7 @@ App.COUNTRY_CODES = {
 
 App.countryCode = function(name){
   if(!name) return '';
-  var key = name.trim();
+  var key = name.trim().replace(/臺/g, '台'); // 「臺」是「台」的異體字，統一比對，避免打「臺灣」對不到「台灣」
   if(!key) return '';
   if(App.COUNTRY_CODES[key]) return App.COUNTRY_CODES[key];
   for(var k in App.COUNTRY_CODES){

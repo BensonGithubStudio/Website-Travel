@@ -2,14 +2,14 @@
 .overlay{
   position:fixed; inset:0; background: rgba(34,29,20,0.5); backdrop-filter: blur(2px);
   display:flex; align-items:flex-end; justify-content:center; z-index:50;
-  opacity:0; pointer-events:none; transition: opacity .18s ease;
+  opacity:0; pointer-events:none; overflow-x:hidden; transition: opacity .18s ease;
 }
 .overlay.open{ opacity:1; pointer-events:auto; }
 @media (min-width:720px){ .overlay{ align-items:center; } }
 
 .sheet{
   background: var(--paper); color: var(--ink); width:100%; max-width: 640px;
-  max-height: 92vh; overflow-y:auto; border-radius: 10px 10px 0 0;
+  max-height: 92vh; overflow-x:hidden; overflow-y:auto; border-radius: 10px 10px 0 0;
   padding: 30px 26px 26px; transform: translateY(24px); transition: transform .2s ease;
 }
 .overlay.open .sheet{ transform: translateY(0); }
