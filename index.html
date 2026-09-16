@@ -197,7 +197,11 @@
   .field input:focus, .field textarea:focus{ outline:none; border-color: var(--ink-soft); }
   .field textarea{ min-height: 90px; }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .row2 > .field{ min-width:0; }
   @media (max-width:480px){ .row2{ gap:10px; } }
+  @media (max-width:480px){
+    .field input[type=date]{ padding:10px 6px; font-size:13px; }
+  }
 
   .cat-toggle{ display:flex; gap:8px; flex-wrap:wrap; }
   .cat-toggle button{
@@ -724,6 +728,12 @@
   }
 
   // ---------- FORM ----------
+  function todayStr(){
+    var d = new Date();
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + mm + '-' + dd;
+  }
   function openForm(entry){
     state.editingId = entry ? entry.id : null;
     document.getElementById('formTitle').textContent = entry ? '編輯這則日誌' : '投稿一則日誌';
@@ -731,7 +741,7 @@
     document.getElementById('fRegion').value = entry ? entry.region || '' : '';
     document.getElementById('fTitle').value = entry ? entry.title || '' : '';
     document.getElementById('fContent').value = entry ? entry.content || '' : '';
-    document.getElementById('fDate').value = entry ? entry.date || '' : '';
+    document.getElementById('fDate').value = entry ? (entry.date || '') : todayStr();
     document.getElementById('fCompanions').value = entry ? entry.companions || '' : '';
     setFormCategory(entry ? entry.category : 'customs');
     formOverlay.classList.add('open');
