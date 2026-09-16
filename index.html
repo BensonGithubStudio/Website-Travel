@@ -175,18 +175,26 @@
   .overlay.open .sheet{ transform: translateY(0); }
   @media (min-width:720px){ .sheet{ border-radius: 10px; } }
 
-  .sheet h2.form-title{ font-family: var(--font-display); font-size:24px; margin:0 0 20px; font-weight:700; }
+  .sheet h2.form-title{ font-family: var(--font-display); font-size:24px; margin:0; font-weight:700; }
+  .form-header{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:20px; }
+  .btn-close{
+    background:none; border:none; padding:4px; line-height:0; color: var(--ink-soft);
+    flex-shrink:0; border-radius:6px; transition: color .15s, background .15s;
+  }
+  .btn-close:hover{ color: var(--ink); background: var(--paper-2); }
+  .btn-close svg{ width:20px; height:20px; }
 
   .field{ margin-bottom:16px; }
   .field label{ display:block; font-size:13px; font-weight:700; color: var(--ink-soft); margin-bottom:6px; }
-  .field input[type=text], .field textarea{
+  .field input[type=text], .field input[type=date], .field textarea{
     width:100%; border:1.5px solid var(--rule); background:#fff; border-radius:6px;
     padding:10px 12px; font-size:14px; color: var(--ink); resize:vertical;
   }
+  .field input[type=date]{ font-family: inherit; }
   .field input:focus, .field textarea:focus{ outline:none; border-color: var(--ink-soft); }
   .field textarea{ min-height: 90px; }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:480px){ .row2{ grid-template-columns:1fr; } }
+  @media (max-width:480px){ .row2{ gap:10px; } }
 
   .cat-toggle{ display:flex; gap:8px; flex-wrap:wrap; }
   .cat-toggle button{
@@ -279,7 +287,8 @@
     .error-box{ margin:10px 0; padding:12px; font-size:13px; }
 
     .sheet{ max-height:90vh; padding:20px 16px calc(16px + env(safe-area-inset-bottom)); }
-    .sheet h2.form-title{ font-size:21px; margin-bottom:14px; }
+    .sheet h2.form-title{ font-size:21px; }
+    .form-header{ margin-bottom:14px; }
     .field{ margin-bottom:11px; }
     .field textarea{ min-height:72px; }
     .sheet-actions{ margin-top:16px; }
@@ -338,7 +347,12 @@
 
 <div class="overlay" id="formOverlay">
   <form class="sheet" id="entryForm">
-    <h2 class="form-title" id="formTitle">投稿一則日誌</h2>
+    <div class="form-header">
+      <h2 class="form-title" id="formTitle">投稿一則日誌</h2>
+      <button type="button" class="btn-close" id="btnCloseFormTop" aria-label="取消並關閉">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
 
     <div class="field">
       <label>分類</label>
@@ -369,7 +383,7 @@
     <div class="row2">
       <div class="field">
         <label for="fDate">日期</label>
-        <input type="text" id="fDate" placeholder="例如：2024 年 7 月">
+        <input type="date" id="fDate">
       </div>
       <div class="field">
         <label for="fCompanions">同行家人</label>
@@ -378,7 +392,6 @@
     </div>
 
     <div class="sheet-actions">
-      <button type="button" class="btn-secondary" id="btnCancelForm">取消</button>
       <button type="submit" class="btn-primary">發布</button>
     </div>
   </form>
@@ -576,10 +589,17 @@
     return true;
   }
 
+  function formatDate(d){
+    if(!d) return '';
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+    if(!m) return d; // 舊資料若不是標準格式，原樣顯示
+    return m[1] + '年' + parseInt(m[2],10) + '月' + parseInt(m[3],10) + '日';
+  }
+
   function metaLine(e){
     var parts = [];
     if(e.region) parts.push(e.region);
-    if(e.date) parts.push(e.date);
+    if(e.date) parts.push(formatDate(e.date));
     if(e.companions) parts.push('與 ' + e.companions);
     return parts.join(' ・ ');
   }
@@ -652,7 +672,7 @@
       '<p class="country-line">' + esc(e.country) + (e.region ? ' ・ ' + esc(e.region) : '') + '</p>' +
       '<h3>' + esc(e.title) + '</h3>' +
       '<p class="excerpt">' + esc(e.content || '（還沒有寫下內容）') + '</p>' +
-      '<p class="meta">' + esc([e.date, e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>';
+      '<p class="meta">' + esc([formatDate(e.date), e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>';
     card.addEventListener('click', function(){ openDetail(e.id); });
     card.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') openDetail(e.id); });
     return card;
@@ -678,7 +698,7 @@
     state.editingId = null;
   }
   document.getElementById('btnAdd').addEventListener('click', function(){ openForm(); });
-  document.getElementById('btnCancelForm').addEventListener('click', closeForm);
+  document.getElementById('btnCloseFormTop').addEventListener('click', closeForm);
   formOverlay.addEventListener('click', function(e){ if(e.target === formOverlay) closeForm(); });
 
   entryForm.addEventListener('submit', async function(e){
@@ -753,7 +773,7 @@
       '<span class="detail-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
       '<p class="detail-country">' + esc(e.country) + (e.region ? ' ・ ' + esc(e.region) : '') + '</p>' +
       '<h2 class="detail-title">' + esc(e.title) + '</h2>' +
-      '<p class="detail-meta">' + esc([e.date, e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>' +
+      '<p class="detail-meta">' + esc([formatDate(e.date), e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>' +
       '<p class="detail-body">' + esc(e.content || '還沒有寫下內容。') + '</p>' +
       '<div class="detail-footer">' + footerHtml + '</div>';
 
