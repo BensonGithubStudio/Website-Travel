@@ -1,0 +1,12 @@
+/* ---------- EMPTY / LOADING / ERROR ---------- */
+.empty{ text-align:center; padding: 70px 20px; color: var(--ink-soft); }
+.empty svg{ width:52px; height:52px; opacity:0.4; margin-bottom:16px; }
+.empty h3{ font-family: var(--font-display); font-size:21px; color: var(--ink); margin:0 0 8px; font-weight:700; }
+.empty p{ margin:0 0 20px; font-size:14px; }
+.loading{ text-align:center; padding: 70px 20px; color: var(--ink-soft); font-size:14px; }
+.error-box{
+  background: var(--brand-soft); border: 1px solid rgba(214,67,31,0.4); color: var(--brand-deep);
+  padding: 16px 18px; border-radius: 8px; margin: 20px 0; font-size:14px;
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.error-box button{ background: var(--ink); color:#fff; border:none; padding:7px 14px; border-radius: 6px; font-size:13px; font-weight:600; }

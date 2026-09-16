@@ -1,0 +1,11 @@
+/* ---------- DETAIL ---------- */
+.detail-kicker{ font-size:12.5px; font-weight:700; display:inline-flex; align-items:center; gap:6px; padding:5px 13px; border-radius:999px; color:#fff; margin-bottom:14px; }
+.detail-country{ font-size:13.5px; color: var(--ink-soft); font-weight:600; margin: 0 0 4px; }
+.detail-title{ font-family: var(--font-display); font-size:26px; font-weight:700; margin:0 0 10px; line-height:1.35; }
+.detail-meta{ font-size:13px; color: var(--ink-soft); margin: 0 0 20px; }
+.detail-body{ font-size:15.5px; color: var(--ink); white-space: pre-wrap; margin: 0 0 24px; }
+.detail-footer{ display:flex; justify-content: space-between; align-items:center; border-top:1px solid var(--rule); padding-top:18px; gap:10px; flex-wrap:wrap; }
+.detail-footer .left-actions{ display:flex; gap:8px; }
+.btn-danger{ background: transparent; color: var(--brand-deep); border:1.5px solid rgba(214,67,31,0.4); padding:9px 16px; border-radius:8px; font-size:13px; font-weight:700; }
+.btn-danger:hover{ background: var(--brand-soft); }
+.confirm-row{ display:flex; align-items:center; gap:10px; font-size:13px; color: var(--brand-deep); flex-wrap:wrap; }

@@ -1,0 +1,19 @@
+:root{
+  --paper: #FFFCF4;
+  --paper-2: #FBF6E8;
+  --ink: #221D14;
+  --ink-soft: #6F6656;
+  --rule: #E4DAC0;
+  --rule-strong: #221D14;
+  --brand: #D6431F;
+  --brand-deep: #A83313;
+  --brand-soft: #FBE4DB;
+
+  --c-exit: #2454A6;      --c-exit-soft: #E5ECF9;
+  --c-customs: #1D8A6C;   --c-customs-soft: #E2F3EC;
+  --c-precaution: #B5720E;--c-precaution-soft: #FBF0D8;
+  --c-reflection: #B23568;--c-reflection-soft: #F9E3EC;
+
+  --font-display: 'Noto Serif TC', Georgia, 'PingFang TC', serif;
+  --font-body: 'Noto Sans TC', -apple-system, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+}
