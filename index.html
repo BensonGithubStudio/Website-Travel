@@ -125,6 +125,7 @@
     display:flex; align-items:center; width:fit-content; background:var(--brand); color:#fff;
     padding:3px 9px; margin-bottom:8px; font-size:11px; font-weight:700; letter-spacing:.12em; line-height:1.4;
   }
+  .lead-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
   .lead-kicker{ font-size:12.5px; font-weight:700; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:999px; color:#fff; margin-bottom:10px; }
   .lead h2{ font-family: var(--font-display); font-size: clamp(22px,3vw,30px); margin:0 0 10px; font-weight:700; line-height:1.35; }
   .lead .meta{ font-size:13px; color: var(--ink-soft); margin: 0 0 10px; }
@@ -138,7 +139,9 @@
     display:flex; flex-direction:column; min-height: 168px;
   }
   .card:hover{ transform: translateY(-3px); box-shadow: 0 10px 22px rgba(34,29,20,0.12); }
-  .card-kicker{ font-size:11.5px; font-weight:700; display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; color:#fff; margin-bottom:10px; width:fit-content; }
+  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .card-kicker{ font-size:11.5px; font-weight:700; display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; color:#fff; width:fit-content; }
+  .card-flag{ width:48px; height:36px; object-fit:cover; border-radius:5px; box-shadow:0 0 0 1px rgba(34,29,20,0.15); flex-shrink:0; display:block; background: var(--rule); }
   .card .country-line{ font-size:12.5px; color: var(--ink-soft); margin: 0 0 4px; font-weight:600; }
   .card h3{ font-family: var(--font-display); font-size:17.5px; margin:0 0 8px; font-weight:700; line-height:1.4; }
   .card p.excerpt{ font-size:13.5px; color: var(--ink); opacity:0.82; margin:0; flex:1;
@@ -277,7 +280,9 @@
 
     .grid{ grid-template-columns:1fr; gap:14px; }
     .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; }
-    .card-kicker{ font-size:10.5px; padding:3px 8px; margin-bottom:7px; }
+    .card-kicker{ font-size:10.5px; padding:3px 8px; }
+    .card-top{ margin-bottom:7px; }
+    .card-flag{ width:40px; height:30px; }
     .card .country-line{ font-size:11.5px; margin-bottom:3px; }
     .card h3{ font-size:16px; margin-bottom:6px; }
     .card p.excerpt{ font-size:12.5px; line-height:1.5; max-height:3em; }
@@ -412,6 +417,36 @@
     reflection: { label:'旅遊心得',   color:'var(--c-reflection)', hex:'#B23568' }
   };
   var CAT_ORDER = ['exit','customs','precaution','reflection'];
+
+  // 常見國家（含慣用中文名稱／簡稱）對應 ISO 國碼，用來組出國旗圖片網址；找不到就不顯示
+  var COUNTRY_CODES = {
+    '台灣':'tw','中華民國':'tw','中國':'cn','中國大陸':'cn','香港':'hk','澳門':'mo',
+    '日本':'jp','韓國':'kr','南韓':'kr','北韓':'kp',
+    '泰國':'th','越南':'vn','新加坡':'sg','馬來西亞':'my','印尼':'id','菲律賓':'ph',
+    '柬埔寨':'kh','寮國':'la','老撾':'la','緬甸':'mm','汶萊':'bn','東帝汶':'tl',
+    '印度':'in','尼泊爾':'np','不丹':'bt','斯里蘭卡':'lk','巴基斯坦':'pk','孟加拉':'bd','蒙古':'mn',
+    '美國':'us','加拿大':'ca','墨西哥':'mx','古巴':'cu',
+    '英國':'gb','法國':'fr','德國':'de','義大利':'it','西班牙':'es','葡萄牙':'pt',
+    '荷蘭':'nl','比利時':'be','瑞士':'ch','奧地利':'at','希臘':'gr',
+    '瑞典':'se','挪威':'no','丹麥':'dk','芬蘭':'fi','冰島':'is','愛爾蘭':'ie',
+    '波蘭':'pl','捷克':'cz','匈牙利':'hu','俄羅斯':'ru','土耳其':'tr','克羅埃西亞':'hr',
+    '澳洲':'au','紐西蘭':'nz',
+    '埃及':'eg','摩洛哥':'ma','南非':'za','肯亞':'ke',
+    '杜拜':'ae','阿拉伯聯合大公國':'ae','沙烏地阿拉伯':'sa','以色列':'il','約旦':'jo','卡達':'qa',
+    '巴西':'br','阿根廷':'ar','智利':'cl','秘魯':'pe','哥倫比亞':'co'
+  };
+  function countryCode(name){
+    if(!name) return '';
+    var key = name.trim();
+    if(!key) return '';
+    if(COUNTRY_CODES[key]) return COUNTRY_CODES[key];
+    for(var k in COUNTRY_CODES){
+      if(key.indexOf(k) !== -1) return COUNTRY_CODES[k];
+    }
+    return '';
+  }
+
+
 
   var state = { entries: [], country: 'all', category: 'all', search: '', formCategory: 'customs', editingId: null, deleteConfirmId: null };
 
@@ -635,11 +670,17 @@
     var html = '';
     if(lead){
       var lc = CATS[lead.category] || CATS.customs;
+      var leadCode = countryCode(lead.country);
       html += '<div class="lead" id="leadCard">' +
         '<div class="bar" style="background:' + lc.hex + '"></div>' +
         '<div>' +
-          '<span class="latest-label">最新日誌</span>' +
-          '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + esc(lead.country) + '</span>' +
+          '<div class="lead-top">' +
+            '<div>' +
+              '<span class="latest-label">最新日誌</span>' +
+              '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + esc(lead.country) + '</span>' +
+            '</div>' +
+            (leadCode ? '<img class="card-flag" src="https://flagcdn.com/48x36/' + leadCode + '.png" srcset="https://flagcdn.com/96x72/' + leadCode + '.png 2x" alt="' + esc(lead.country) + '" title="' + esc(lead.country) + '" loading="lazy">' : '') +
+          '</div>' +
           '<h2>' + esc(lead.title) + '</h2>' +
           '<p class="meta">' + esc(metaLine(lead)) + '</p>' +
           '<p class="excerpt">' + esc((lead.content||'').slice(0,120)) + '</p>' +
@@ -662,13 +703,17 @@
 
   function renderCard(e){
     var c = CATS[e.category] || CATS.customs;
+    var code = countryCode(e.country);
     var card = document.createElement('div');
     card.className = 'card';
     card.style.borderLeftColor = c.hex;
     card.tabIndex = 0;
     card.setAttribute('role','button');
     card.innerHTML =
-      '<span class="card-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+      '<div class="card-top">' +
+        '<span class="card-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+        (code ? '<img class="card-flag" src="https://flagcdn.com/48x36/' + code + '.png" srcset="https://flagcdn.com/96x72/' + code + '.png 2x" alt="' + esc(e.country) + '" title="' + esc(e.country) + '" loading="lazy">' : '') +
+      '</div>' +
       '<p class="country-line">' + esc(e.country) + (e.region ? ' ・ ' + esc(e.region) : '') + '</p>' +
       '<h3>' + esc(e.title) + '</h3>' +
       '<p class="excerpt">' + esc(e.content || '（還沒有寫下內容）') + '</p>' +
