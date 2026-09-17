@@ -7,6 +7,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- PWA: installability -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#D6431F">
+
+<!-- PWA: favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="shortcut icon" href="icons/favicon.ico">
+
+<!-- PWA: iOS "Add to Home Screen" support (iOS ignores the manifest) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="旅行日誌">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -122,5 +137,16 @@
 <script src="js/form.js"></script>
 <script src="js/detail.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+  // PWA: register service worker (enables offline + install prompt on Android/desktop)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
+</script>
 </body>
 </html>
