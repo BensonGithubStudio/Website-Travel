@@ -16,6 +16,15 @@ App.loadEntries = async function(){
       e.createdAt = Number(e.createdAt) || 0;
       e.pinned = App.truthy(e.pinned);
       e.date = App.toDateInputValue(e.date);
+      // 後端（Google Sheet）欄位可能因儲存格格式被讀成數字或其他型別，
+      // 這裡統一轉成字串，避免之後呼叫 .trim() / .toLowerCase() 時整頁壞掉
+      e.id = String(e.id == null ? '' : e.id);
+      e.category = String(e.category == null ? '' : e.category);
+      e.country = String(e.country == null ? '' : e.country).trim();
+      e.region = String(e.region == null ? '' : e.region).trim();
+      e.title = String(e.title == null ? '' : e.title).trim();
+      e.content = String(e.content == null ? '' : e.content).trim();
+      e.companions = String(e.companions == null ? '' : e.companions).trim();
     });
     entries.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
     App.state.entries = entries;

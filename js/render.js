@@ -116,7 +116,7 @@ App.renderContent = function(){
     var emptyBtn = document.createElement('button');
     emptyBtn.className = 'btn-add';
     emptyBtn.style.margin = '0 auto';
-    emptyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> 投稿一則';
+    emptyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg><span class="btn-label">投稿一則</span>';
     emptyBtn.addEventListener('click', function(){ App.openForm(); });
     content.querySelector('.empty').appendChild(emptyBtn);
     return;

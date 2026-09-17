@@ -1,3 +1,11 @@
+/* ---------- ADD-BUTTON ICON: always white, desktop + mobile ---------- */
+/* Higher-specificity selector + !important so this wins even inside the
+   empty state. The real culprit there is states.css's ".empty svg" rule,
+   which sets opacity:0.4 for its big illustration icon — but the add
+   button's SVG lives inside .empty too, so it inherited that faded look
+   even though its stroke was already white. Reset both. */
+button.btn-add svg{ stroke:#fff !important; opacity:1 !important; }
+
 /* ---------- BALANCED MOBILE LAYOUT ---------- */
 @media (max-width:719px){
   /* Keep the newspaper identity and leave room for the hierarchy to breathe. */
@@ -29,10 +37,11 @@
   /* The composer is always nearby without consuming filter-row height. */
   .btn-add{
     position:fixed; right:max(16px, env(safe-area-inset-right)); bottom:max(16px, env(safe-area-inset-bottom));
-    z-index:40; width:56px; height:56px; padding:0; border-radius:50%; justify-content:center;
+    z-index:40; width:56px; height:56px; padding:0; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; gap:0;
     box-shadow:0 8px 20px rgba(168,51,19,.34);
   }
-  .btn-add svg{ width:25px; height:25px; }
+  .btn-add svg{ width:25px; height:25px; display:block; margin:0; flex-shrink:0; }
   .btn-add .btn-label{ display:none; }
   .btn-add:focus-visible{ outline-color:var(--ink); outline-offset:3px; }
 
