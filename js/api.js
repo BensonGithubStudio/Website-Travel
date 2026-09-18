@@ -2,7 +2,7 @@ window.App = window.App || {};
 
 // ---------- STORAGE (Google Sheet via Apps Script Web App) ----------
 // 把「已部署的 Apps Script 網頁應用程式」網址貼在這裡（結尾是 /exec）
-App.API_URL = 'https://script.google.com/macros/s/AKfycbzazYHRWD_DzyQUWvnMMqVa0SPTu0RZmMYH9jF1DuBqBiasnfg5P2dHMimq5uI82JUD/exec';
+App.API_URL = 'https://script.google.com/macros/s/AKfycbx7o_oMHwxMdo4X_lhEw8VR2YsnlcInB9frwmrAR7f0W0zt6qFRo3-Qpag_VdngjmXm/exec';
 
 App.loadEntries = async function(){
   var content = App.dom.content;

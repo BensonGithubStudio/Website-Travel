@@ -31,14 +31,38 @@
 <link rel="stylesheet" href="css/modal.css">
 <link rel="stylesheet" href="css/detail.css">
 <link rel="stylesheet" href="css/toast.css">
+<link rel="stylesheet" href="css/login.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
+
+<!-- 登入畫面：預設就是「open」，未登入前會蓋住整個頁面，登入成功才會移除 -->
+<div class="overlay open" id="loginOverlay">
+  <form class="sheet login-sheet" id="loginForm">
+    <div class="form-header">
+      <h2 class="form-title">管理員登入</h2>
+    </div>
+    <p class="login-desc">此站僅開放管理員瀏覽，請輸入帳號密碼登入。</p>
+    <div class="field">
+      <label for="lUsername">帳號</label>
+      <input type="text" id="lUsername" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="lPassword">密碼</label>
+      <input type="password" id="lPassword" autocomplete="current-password" required>
+    </div>
+    <div class="login-error" id="loginError" style="display:none;"></div>
+    <div class="row-submit">
+      <button type="submit" class="btn-primary" id="btnLoginSubmit">登入</button>
+    </div>
+  </form>
+</div>
 
 <div class="utility-bar">
   <div class="utility-inner">
     <span id="todayLine"></span>
     <span id="countLine">共 0 則日誌</span>
+    <button id="btnLogout" class="btn-logout" type="button" style="display:none;">登出</button>
   </div>
 </div>
 
@@ -128,6 +152,8 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- auth.js 一定要排在最前面，才能在其他腳本發出任何請求前先把 fetch 攔截好 -->
+<script src="js/auth.js"></script>
 <script src="js/config.js"></script>
 <script src="js/state.js"></script>
 <script src="js/utils.js"></script>

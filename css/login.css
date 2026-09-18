@@ -1,0 +1,26 @@
+/* ---------- LOGIN GATE ---------- */
+#loginOverlay{
+  z-index: 200;
+  background: var(--paper);
+  backdrop-filter: none;
+}
+#loginOverlay .login-sheet{
+  max-width: 380px;
+}
+.login-desc{
+  font-size: 13.5px; color: var(--ink-soft); margin: 0 0 20px;
+}
+.login-error{
+  background: var(--brand-soft); color: var(--brand-deep); border:1px solid rgba(214,67,31,0.4);
+  padding: 10px 12px; border-radius:6px; font-size:13px; margin-bottom:14px;
+}
+#loginForm .row-submit{ justify-content:flex-end; }
+#loginForm .btn-primary{ width:100%; }
+
+body.auth-locked{ overflow:hidden; }
+
+.btn-logout{
+  background:none; border:1px solid var(--rule-strong); color:var(--ink);
+  padding:4px 12px; border-radius:999px; font-size:12px; font-weight:600;
+}
+.btn-logout:hover{ background: var(--paper-2); }
