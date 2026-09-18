@@ -161,7 +161,7 @@ App.renderContent = function(){
         '</div>' +
         '<h2>' + App.esc(lead.title) + '</h2>' +
         '<p class="meta">' + App.esc(App.metaLine(lead)) + '</p>' +
-        '<p class="excerpt">' + App.esc((lead.content||'').slice(0,120)) + '</p>' +
+        '<p class="excerpt">' + App.linkifyPreview(App.esc(lead.content || '')) + '</p>' +
       '</div>' +
     '</div>';
   }
@@ -208,7 +208,7 @@ App.renderCard = function(e){
     '</div>' +
     '<p class="country-line">' + App.esc(e.country) + (e.region ? ' ・ ' + App.esc(e.region) : '') + '</p>' +
     '<h3>' + App.esc(e.title) + '</h3>' +
-    '<p class="excerpt">' + App.esc(e.content || '（還沒有寫下內容）') + '</p>' +
+    '<p class="excerpt">' + App.linkifyPreview(App.esc(e.content || '（還沒有寫下內容）')) + '</p>' +
     '<p class="meta">' + App.esc([App.formatDate(e.date), e.companions ? '與 ' + e.companions : ''].filter(Boolean).join(' ・ ')) + '</p>';
   card.addEventListener('click', function(){ App.openDetail(e.id); });
   card.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') App.openDetail(e.id); });

@@ -10,6 +10,23 @@
 .detail-title{ font-family: var(--font-display); font-size:26px; font-weight:700; margin:0 0 10px; line-height:1.35; }
 .detail-meta{ font-size:13px; color: var(--ink-soft); margin: 0 0 20px; }
 .detail-body{ font-size:15.5px; color: var(--ink); white-space: pre-wrap; margin: 0 0 24px; }
+.content-link{ color: var(--brand-deep); text-decoration: underline; text-decoration-color: rgba(214,67,31,0.4); text-underline-offset: 2px; word-break: break-all; }
+.content-link:hover{ text-decoration-color: var(--brand-deep); }
+
+.detail-links{ margin: 0 0 24px; }
+.detail-links-title{ font-size:12.5px; font-weight:700; color: var(--ink-soft); margin: 0 0 8px; }
+.link-chip-row{ display:flex; flex-direction:column; gap:8px; }
+.link-chip{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border:1.5px solid var(--rule);
+  border-radius:8px; background: var(--paper-2); text-decoration:none; color: var(--ink);
+  transition: border-color .15s, background .15s;
+}
+.link-chip:hover{ border-color: var(--ink-soft); background:#F5EED9; }
+.link-favicon{ width:18px; height:18px; flex:0 0 auto; border-radius:3px; }
+.link-domain{ flex:1 1 auto; min-width:0; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.link-go{ flex:0 0 auto; color: var(--ink-soft); display:flex; }
+.link-go svg{ width:15px; height:15px; }
+.link-chip:hover .link-go{ color: var(--brand-deep); }
 .detail-footer{ display:flex; justify-content: space-between; align-items:center; border-top:1px solid var(--rule); padding-top:18px; gap:10px; flex-wrap:wrap; }
 .detail-footer .left-actions{ display:flex; gap:8px; flex-wrap:wrap; }
 .btn-danger{ background: transparent; color: var(--brand-deep); border:1.5px solid rgba(214,67,31,0.4); padding:9px 16px; border-radius:8px; font-size:13px; font-weight:700; }
