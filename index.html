@@ -180,9 +180,37 @@
   // PWA: register service worker (enables offline + install prompt on Android/desktop)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch((err) => {
+      navigator.serviceWorker.register('sw.js').then((reg) => {
+        // 每次載入頁面都主動問一次「有沒有新版本」，不用乾等瀏覽器自己排程檢查
+        reg.update();
+
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            // installed 且已經有 controller，代表這不是第一次安裝，而是「有新版本」
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+      }).catch((err) => {
         console.warn('Service worker registration failed:', err);
       });
+
+      // 新版 SW 正式接管後，重新整理一次頁面，使用者才會馬上看到新內容
+      let refreshedOnce = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshedOnce) return;
+        refreshedOnce = true;
+        window.location.reload();
+      });
+
+      // 除錯用：網址後面加上 ?clearcache=1，會把所有快取跟 SW 註冊整個清掉
+      if (new URLSearchParams(location.search).has('clearcache')) {
+        caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+        navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
+      }
     });
   }
 </script>

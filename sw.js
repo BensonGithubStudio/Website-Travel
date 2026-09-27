@@ -31,6 +31,14 @@ const APP_SHELL = [
   './icons/apple-touch-icon.png'
 ];
 
+// Allow the page to tell a waiting worker to activate immediately,
+// instead of waiting for all tabs of the old version to close.
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Install: pre-cache the app shell so the site can launch offline.
 self.addEventListener('install', (event) => {
   event.waitUntil(
