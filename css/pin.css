@@ -82,7 +82,7 @@
 .btn-pin:disabled{ opacity:.45; cursor:default; }
 
 .card.is-pinned{
-  box-shadow:0 0 0 1px rgba(181,114,14,.45);
+  box-shadow:0 1px 4px rgba(34,29,20,.07), 0 0 0 1px rgba(181,114,14,.45);
 }
 
 .section-head{

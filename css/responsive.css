@@ -48,7 +48,8 @@
   .lead p.excerpt{ font-size:13px; line-height:1.55; -webkit-line-clamp:2; line-clamp:2; }
 
   .grid{ grid-template-columns:1fr; gap:14px; }
-  .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; }
+  .card{ min-height:0; padding:15px 15px 14px; border-left-width:4px; border-radius:12px; }
+  .lead{ border-radius:12px; }
   .card-kicker{ font-size:10.5px; padding:3px 8px; }
   .card-top{ margin-bottom:7px; }
   .card-flag{ width:56px; height:42px; }
