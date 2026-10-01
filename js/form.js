@@ -5,7 +5,7 @@ var FORM_FIELD_IDS = ['fCountry', 'fRegion', 'fTitle', 'fContent', 'fDate', 'fCo
 
 // 讀取目前表單的所有欄位（分類＋6 個文字欄位），用來和原始內容比對
 App.readFormState = function(){
-  var s = { category: App.state.formCategory || '' };
+  var s = { category: (App.state.formCategories || []).join(',') };
   FORM_FIELD_IDS.forEach(function(id){
     s[id] = document.getElementById(id).value.trim();
   });
@@ -36,7 +36,7 @@ App.openForm = function(entry){
   document.getElementById('fContent').value = entry ? entry.content || '' : '';
   document.getElementById('fDate').value = entry ? (entry.date || '') : App.todayStr();
   document.getElementById('fCompanions').value = entry ? entry.companions || '' : '';
-  App.setFormCategory(entry ? entry.category : 'customs');
+  App.setFormCategories(entry ? entry.categories : ['customs']);
 
   // 欄位都填好之後拍快照：編輯時以此為「原本的內容」
   App.state.formSnapshot = entry ? App.readFormState() : null;
@@ -85,7 +85,7 @@ App.dom.entryForm.addEventListener('submit', async function(e){
   var existing = App.state.editingId ? App.state.entries.find(function(x){ return x.id === App.state.editingId; }) : null;
   var data = {
     id: App.state.editingId || App.uid(),
-    category: App.state.formCategory,
+    category: App.state.formCategories.join(','),
     country: country,
     region: document.getElementById('fRegion').value.trim(),
     title: title,

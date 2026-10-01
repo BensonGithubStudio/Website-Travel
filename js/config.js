@@ -5,10 +5,35 @@ App.CATS = {
   customs:    { label:'當地風俗',   color:'var(--c-customs)',    hex:'#1D8A6C' },
   precaution: { label:'注意事項',   color:'var(--c-precaution)', hex:'#B5720E' },
   lodging:    { label:'住宿安排',   color:'var(--c-lodging)',    hex:'#7A4FB0' },
-  transport:  { label:'交通指引',   color:'var(--c-transport)',  hex:'#0E7C93' },
+  transport:  { label:'交通指引',   color:'var(--c-transport)',  hex:'#ffd102' },
   reflection: { label:'旅遊心得',   color:'var(--c-reflection)', hex:'#B23568' }
 };
 App.CAT_ORDER = ['exit','customs','precaution','lodging','transport','reflection'];
+
+// 把 'lodging,precaution' 或陣列整理成「有效、依 CAT_ORDER 排序」的陣列；沒有有效值就當作 customs
+App.parseCats = function(v){
+  var raw = Array.isArray(v) ? v : String(v == null ? '' : v).split(/[,，、\s]+/);
+  var set = {};
+  raw.forEach(function(k){ k = String(k).trim(); if(App.CATS[k]) set[k] = true; });
+  var list = App.CAT_ORDER.filter(function(k){ return set[k]; });
+  return list.length ? list : ['customs'];
+};
+
+// 左側色條：每個類別各佔一段，顏色在段與段之間平滑融合；單一類別就是純色
+App.catGradient = function(cats){
+  var n = cats.length;
+  var stops = cats.map(function(k, i){
+    return App.CATS[k].hex + ' ' + ((i + 0.5) / n * 100).toFixed(1) + '%';
+  });
+  if(n === 1) stops = [App.CATS[cats[0]].hex, App.CATS[cats[0]].hex];
+  return 'linear-gradient(to bottom, ' + stops.join(', ') + ')';
+};
+
+// 卡片用的短標籤：主分類名稱，多選時加「+N」
+App.catLabel = function(e){
+  var label = App.CATS[e.categories[0]].label;
+  return e.categories.length > 1 ? label + ' +' + (e.categories.length - 1) : label;
+};
 
 // 常見國家（含慣用中文名稱／簡稱）對應 ISO 國碼，用來組出國旗圖片網址；找不到就不顯示
 App.COUNTRY_CODES = {

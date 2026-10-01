@@ -35,7 +35,9 @@ App.closeDetail = function(){
 };
 
 App.renderDetail = function(e){
-  var c = App.CATS[e.category] || App.CATS.customs;
+  var kickersHtml = e.categories.map(function(k){
+    return '<span class="detail-kicker" style="background:' + App.CATS[k].hex + ';margin-right:6px">' + App.CATS[k].label + '</span>';
+  }).join('');
   var isPinned = App.truthy(e.pinned);
   var footerHtml;
   if(App.state.deleteConfirmId === e.id){
@@ -55,7 +57,7 @@ App.renderDetail = function(e){
   }
 
   App.dom.detailSheet.innerHTML =
-    '<span class="detail-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+    kickersHtml +
     (isPinned ? '<span class="detail-pinned">' + App.PIN_SVG + '已釘選</span>' : '') +
     '<p class="detail-country">' + App.esc(e.country) + (e.region ? ' ・ ' + App.esc(e.region) : '') + '</p>' +
     '<h2 class="detail-title">' + App.esc(e.title) + '</h2>' +

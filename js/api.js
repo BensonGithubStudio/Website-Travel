@@ -19,7 +19,8 @@ App.loadEntries = async function(){
       // 後端（Google Sheet）欄位可能因儲存格格式被讀成數字或其他型別，
       // 這裡統一轉成字串，避免之後呼叫 .trim() / .toLowerCase() 時整頁壞掉
       e.id = String(e.id == null ? '' : e.id);
-      e.category = String(e.category == null ? '' : e.category);
+      e.categories = App.parseCats(e.category); // 陣列，給畫面用
+      e.category = e.categories.join(',');      // 字串，存回後端用
       e.country = String(e.country == null ? '' : e.country).trim();
       e.region = String(e.region == null ? '' : e.region).trim();
       e.title = String(e.title == null ? '' : e.title).trim();

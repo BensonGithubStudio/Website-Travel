@@ -38,18 +38,33 @@ window.App = window.App || {};
     btn.type = 'button';
     btn.textContent = c.label;
     btn.dataset.cat = key;
-    btn.addEventListener('click', function(){ App.setFormCategory(key); });
+    btn.addEventListener('click', function(){ App.toggleFormCategory(key); });
     catToggleEl.appendChild(btn);
   });
 
-  App.setFormCategory = function(key){
-    App.state.formCategory = key;
+  App.setFormCategories = function(list){
+    var picked = App.parseCats(list);
+    App.state.formCategories = picked;
     Array.from(catToggleEl.children).forEach(function(btn){
-      var active = btn.dataset.cat === key;
+      var active = picked.indexOf(btn.dataset.cat) !== -1;
+      var hex = App.CATS[btn.dataset.cat].hex;
       btn.classList.toggle('is-active', active);
-      btn.style.background = active ? App.CATS[key].hex : '#fff';
-      btn.style.borderColor = active ? App.CATS[key].hex : '';
+      btn.style.background = active ? hex : '#fff';
+      btn.style.borderColor = active ? hex : '';
     });
   };
-  App.setFormCategory('customs');
+
+  App.toggleFormCategory = function(key){
+    var cur = (App.state.formCategories || []).slice();
+    var i = cur.indexOf(key);
+    if(i !== -1){
+      if(cur.length === 1) return; // 至少保留一個
+      cur.splice(i, 1);
+    } else {
+      cur.push(key);
+    }
+    App.setFormCategories(cur);
+  };
+
+  App.setFormCategories(['customs']);
 })();

@@ -65,8 +65,11 @@ App.renderAll = function(){
 };
 
 App.renderStatStrip = function(){
-  var counts = { exit:0, customs:0, precaution:0, reflection:0 };
-  App.state.entries.forEach(function(e){ if(counts.hasOwnProperty(e.category)) counts[e.category]++; });
+  var counts = {};
+  App.CAT_ORDER.forEach(function(k){ counts[k] = 0; });
+  App.state.entries.forEach(function(e){
+    e.categories.forEach(function(k){ counts[k]++; });
+  });
   var strip = document.getElementById('statStrip');
   strip.innerHTML = App.CAT_ORDER.map(function(key){
     var c = App.CATS[key];
@@ -93,7 +96,7 @@ App.renderCountryRow = function(){
 
 App.matches = function(e){
   if(App.state.country !== 'all' && (e.country||'').trim() !== App.state.country) return false;
-  if(App.state.category !== 'all' && e.category !== App.state.category) return false;
+  if(App.state.category !== 'all' && e.categories.indexOf(App.state.category) === -1) return false;
   if(App.state.search){
     var q = App.state.search.toLowerCase();
     var hay = [e.country, e.region, e.title, e.content, e.companions].join(' ').toLowerCase();
@@ -142,17 +145,17 @@ App.renderContent = function(){
   }
 
   if(lead){
-    var lc = App.CATS[lead.category] || App.CATS.customs;
+    var lc = App.CATS[lead.categories[0]];
     var leadCode = App.countryCode(lead.country);
     html += '<div class="lead" id="leadCard">' +
-      '<div class="bar" style="background:' + lc.hex + '"></div>' +
+      '<div class="bar" style="background:' + App.catGradient(lead.categories) + '"></div>' +
       '<div>' +
         '<div class="lead-top">' +
           '<div class="lead-top-left">' +
             App.pinBtnHtml(lead) +
             '<div class="lead-labels">' +
               '<span class="latest-label">最新日誌</span>' +
-              '<span class="lead-kicker" style="background:' + lc.hex + '">' + lc.label + ' ・ ' + App.esc(lead.country) + '</span>' +
+              '<span class="lead-kicker" style="background:' + lc.hex + '">' + App.esc(App.catLabel(lead)) + ' ・ ' + App.esc(lead.country) + '</span>' +
             '</div>' +
           '</div>' +
           '<div class="card-top-right">' +
@@ -189,18 +192,18 @@ App.renderContent = function(){
 };
 
 App.renderCard = function(e){
-  var c = App.CATS[e.category] || App.CATS.customs;
+  var c = App.CATS[e.categories[0]];
   var code = App.countryCode(e.country);
   var card = document.createElement('div');
   card.className = 'card' + (App.truthy(e.pinned) ? ' is-pinned' : '');
-  card.style.borderLeftColor = c.hex;
+  card.style.setProperty('--bar', App.catGradient(e.categories));
   card.tabIndex = 0;
   card.setAttribute('role','button');
   card.innerHTML =
     '<div class="card-top">' +
       '<div class="card-top-left">' +
         App.pinBtnHtml(e) +
-        '<span class="card-kicker" style="background:' + c.hex + '">' + c.label + '</span>' +
+        '<span class="card-kicker" style="background:' + c.hex + '" title="' + App.esc(e.categories.map(function(k){ return App.CATS[k].label; }).join('、')) + '">' + App.esc(App.catLabel(e)) + '</span>' +
       '</div>' +
       '<div class="card-top-right">' +
         (code ? '<img class="card-flag" src="https://flagcdn.com/96x72/' + code + '.png" srcset="https://flagcdn.com/192x144/' + code + '.png 2x" alt="' + App.esc(e.country) + '" title="' + App.esc(e.country) + '" loading="lazy">' : '') +

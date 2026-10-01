@@ -5,7 +5,7 @@ App.state = {
   country: 'all',
   category: 'all',
   search: '',
-  formCategory: 'customs',
+  formCategories: ['customs'],
   editingId: null,
   detailId: null,
   deleteConfirmId: null,
