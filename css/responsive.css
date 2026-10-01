@@ -57,7 +57,9 @@
   .btn-pin{ width:26px; height:26px; }
   .btn-pin svg{ width:14px; height:14px; }
   .section-head{ font-size:14.5px; margin-bottom:11px; }
-  #pinnedGrid{ margin-bottom:22px; }
+  #pinnedGrid{ margin-bottom:16px; }
+  .pin-divider{ margin-bottom:16px; }
+  .pinned-divider{ margin-bottom:22px; }
   .card .country-line{ font-size:11.5px; margin-bottom:3px; }
   .card h3{ font-size:21px; margin-bottom:6px; }
   .card p.excerpt{ font-size:12.5px; line-height:1.5; -webkit-line-clamp:2; line-clamp:2; }

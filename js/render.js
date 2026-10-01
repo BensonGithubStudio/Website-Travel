@@ -142,6 +142,8 @@ App.renderContent = function(){
   if(pinnedList.length){
     html += '<div class="section-head">' + App.PIN_SVG + '釘選的日誌<span class="section-count">' + pinnedList.length + '</span></div>';
     html += '<div class="grid" id="pinnedGrid"></div>';
+    if(lead || rest.length) html += '<hr class="pin-divider">'; // 後面還有非釘選內容時才畫分隔線
+    if(lead || rest.length) html += '<hr class="pinned-divider">'; // 釘選區與其他日誌之間的分隔線
   }
 
   if(lead){

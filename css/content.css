@@ -13,7 +13,9 @@
   font-family: var(--font-body); font-size:12px; font-weight:700;
   display:inline-flex; align-items:center; justify-content:center;
 }
-#pinnedGrid{ margin-bottom:30px; }
+#pinnedGrid{ margin-bottom:22px; }
+.pin-divider{ border:0; border-top:1px solid rgba(34,29,20,.25); margin:0 0 22px; }
+.pinned-divider{ border:0; border-top:2px solid var(--rule); margin:0 0 30px; }
 
 /* ---------- PIN BUTTON ---------- */
 .btn-pin{
