@@ -4,9 +4,11 @@ App.CATS = {
   exit:       { label:'出入境須知', color:'var(--c-exit)',       hex:'#2454A6' },
   customs:    { label:'當地風俗',   color:'var(--c-customs)',    hex:'#1D8A6C' },
   precaution: { label:'注意事項',   color:'var(--c-precaution)', hex:'#B5720E' },
+  lodging:    { label:'住宿安排',   color:'var(--c-lodging)',    hex:'#7A4FB0' },
+  transport:  { label:'交通指引',   color:'var(--c-transport)',  hex:'#0E7C93' },
   reflection: { label:'旅遊心得',   color:'var(--c-reflection)', hex:'#B23568' }
 };
-App.CAT_ORDER = ['exit','customs','precaution','reflection'];
+App.CAT_ORDER = ['exit','customs','precaution','lodging','transport','reflection'];
 
 // 常見國家（含慣用中文名稱／簡稱）對應 ISO 國碼，用來組出國旗圖片網址；找不到就不顯示
 App.COUNTRY_CODES = {
