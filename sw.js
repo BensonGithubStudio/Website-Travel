@@ -1,6 +1,6 @@
 // 旅行日誌 — Service Worker
 // Bump this version whenever any cached file changes, to force an update.
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `travel-journal-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -16,7 +16,9 @@ const APP_SHELL = [
   './css/modal.css',
   './css/detail.css',
   './css/toast.css',
+  './css/login.css',
   './css/responsive.css',
+  './js/auth.js',
   './js/config.js',
   './js/state.js',
   './js/utils.js',
@@ -72,29 +74,22 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return; // let cross-origin requests (fonts, API) pass through untouched
+  if (url.origin !== self.location.origin) return; // 字型、API 等跨網域請求不處理
 
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
+  // 網路優先：有網路就一律拿最新的，並更新快取；斷線才用快取
+  event.respondWith(
+    fetch(req, { cache: 'no-cache' })   // no-cache：略過瀏覽器 HTTP 快取
+      .then((res) => {
+        if (res.ok) {
           const copy = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req).then((res) => res || caches.match('./index.html')))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
         return res;
-      }).catch(() => cached);
-    })
+      })
+      .catch(() =>
+        caches.match(req).then((res) =>
+          res || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())
+        )
+      )
   );
 });
